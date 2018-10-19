@@ -1,0 +1,26 @@
+command: ./hw1 du ./
+20	./
+
+command: ./hw1 date
+Fri Aug 24 08:08:30 CDT 2018
+
+command: ./hw1 whoami
+bmord
+
+command: ./hw1 who
+bmord    tty7         2018-08-24 08:00 (:0)
+
+command: ./hw1 ps
+  PID TTY          TIME CMD
+ 1835 pts/2    00:00:00 bash
+ 1945 pts/2    00:00:00 hw1
+ 1946 pts/2    00:00:00 sh
+ 1947 pts/2    00:00:00 ps
+ 
+command: ./hw1 ls -la
+total 28
+drwxrwxr-x  2 bmord bmord  4096 Aug 24 08:10 .
+drwxrwxr-x 10 bmord bmord  4096 Aug 23 09:58 ..
+-rwxr-xr-x  1 bmord bmord 11168 Aug 24 08:05 hw1
+-rw-rw-r--  1 bmord bmord   439 Aug 23 10:36 hw1-BrandonMord.c
+-rw-r--r--  1 bmord bmord   355 Aug 24 08:10 output.txt
