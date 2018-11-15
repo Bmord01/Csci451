@@ -20,7 +20,8 @@ void *readData1(void *args){
     int inSID = (int)args;
     key_t SKey = ftok("program1.c",1);
     int sid;
-    int prev1=0,count=0,current=0,result=-1;;
+    int prev1=0,count=0,current=0,result=-1;
+    bool print=false;
     while(1){
         if((sid=semget(SKey,1,0660))>-1){
             pthread_mutex_lock(&lock);
@@ -33,12 +34,22 @@ void *readData1(void *args){
                 fscanf(inpt,"%d",&current);
                 fclose(inpt);
                 if(current!=prev1){
-                    outpt=fopen("output4.txt","a");
-                    fprintf(outpt,"Thread 1: %d\n",current);
-                    printf("Thread 1: %d\n",current);
-                    fclose(outpt);
-                    
-                    prev1=current;
+                    print=true;
+                }
+                if(print){
+                    //while((result = semctl(inSID,0,GETVAL,NULL))!=0);
+                    if((result = semctl(inSID,0,GETVAL,NULL))==0){
+                        outpt=fopen("output4.txt","a");
+                        fprintf(outpt,"Thread 1: %d\n",current);
+                        printf("Thread 1: %d\n",current);
+                        fclose(outpt);
+                        prev1=current;
+                        print=false;
+                        semctl(inSID,0,SETVAL,1);
+                    }
+                }
+                else{
+                    semctl(inSID,0,SETVAL,0);
                 }
             }
             pthread_mutex_unlock(&lock);
@@ -53,7 +64,8 @@ void *readData2(void *args){
     int inSID = (int)args;
     key_t SKey = ftok("program2.c",1);
     int sid;
-    int prev1=0,count=0,current=0,result=-1;;
+    int prev1=0,count=0,current=0,result=-1;
+    bool print =false;
     while(1){
         if((sid=semget(SKey,1,0660))>-1){
             pthread_mutex_lock(&lock);
@@ -66,11 +78,23 @@ void *readData2(void *args){
                 fscanf(inpt,"%d",&current);
                 fclose(inpt);
                 if(current!=prev1){
-                    outpt=fopen("output4.txt","a");
-                    fprintf(outpt,"Thread 2: %d\n",current);
-                    printf("Thread 2: %d\n",current);
-                    fclose(outpt);
-                    prev1=current;
+                    print=true;
+                }
+                if(print){
+                    //while((result = semctl(inSID,0,GETVAL,NULL))!=1);
+                    if((result = semctl(inSID,0,GETVAL,NULL))==1){
+                        outpt=fopen("output4.txt","a");
+                        fprintf(outpt,"Thread 2: %d\n",current);
+                        printf("Thread 2: %d\n",current);
+                        fclose(outpt);
+                        prev1=current;
+                        print=false;
+                        semctl(inSID,0,SETVAL,2);
+                    }
+                    
+                }
+                else{
+                    semctl(inSID,0,SETVAL,0);
                 }
             }
             pthread_mutex_unlock(&lock);
@@ -85,7 +109,8 @@ void *readData3(void *args){
     int inSID = (int)args;
     key_t SKey = ftok("program3.c",1);
     int sid;
-    int prev1=0,count=0,current=0,result=-1;;
+    int prev1=0,count=0,current=0,result=-1;
+    bool print=false;
     while(1){
         if((sid=semget(SKey,1,0660))>-1){
             pthread_mutex_lock(&lock);
@@ -98,13 +123,22 @@ void *readData3(void *args){
                 fscanf(inpt,"%d",&current);
                 fclose(inpt);
                 if(current!=prev1){
-                    
-                    outpt=fopen("output4.txt","a");
-                    fprintf(outpt,"Thread 3: %d\n",current);
-                    printf("Thread 3: %d\n",current);
-                    fclose(outpt);
-                    
-                    prev1=current;
+                    print=true;
+                }
+                if(print){
+                    //while((result = semctl(inSID,0,GETVAL,NULL))!=2);
+                    if((result = semctl(inSID,0,GETVAL,NULL))==2){
+                        outpt=fopen("output4.txt","a");
+                        fprintf(outpt,"Thread 3: %d\n",current);
+                        printf("Thread 3: %d\n",current);
+                        fclose(outpt);
+                        prev1=current;
+                        print=false;
+                        semctl(inSID,0,SETVAL,0);
+                    }
+                }
+                else{
+                    semctl(inSID,0,SETVAL,0);
                 }
             }
             pthread_mutex_unlock(&lock);
