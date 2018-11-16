@@ -12,7 +12,6 @@
 #include <sys/ipc.h>
 #include <sys/sem.h>
 
-pthread_mutex_t lock;
 bool next1=false,next2=false,next3=false;
 
 void *readData1(void *args){
@@ -24,7 +23,6 @@ void *readData1(void *args){
     bool print=false;
     while(1){
         if((sid=semget(SKey,1,0660))>-1){
-            pthread_mutex_lock(&lock);
             if((result=semctl(sid,0,GETVAL,NULL))!=1){
                 //printf("Inside of reading\n");
                 inpt=fopen("output1.txt","r");
@@ -52,7 +50,6 @@ void *readData1(void *args){
                     semctl(inSID,0,SETVAL,0);
                 }
             }
-            pthread_mutex_unlock(&lock);
         }
         usleep(500000);
     }
@@ -68,7 +65,6 @@ void *readData2(void *args){
     bool print =false;
     while(1){
         if((sid=semget(SKey,1,0660))>-1){
-            pthread_mutex_lock(&lock);
             if((result=semctl(sid,0,GETVAL,NULL))!=1){
                 //printf("Inside of reading\n");
                 inpt=fopen("output2.txt","r");
@@ -97,7 +93,6 @@ void *readData2(void *args){
                     semctl(inSID,0,SETVAL,0);
                 }
             }
-            pthread_mutex_unlock(&lock);
         }
         usleep(500000);
     }
@@ -113,7 +108,6 @@ void *readData3(void *args){
     bool print=false;
     while(1){
         if((sid=semget(SKey,1,0660))>-1){
-            pthread_mutex_lock(&lock);
             if((result=semctl(sid,0,GETVAL,NULL))!=1){
                 //printf("Inside of reading\n");
                 inpt=fopen("output3.txt","r");
@@ -129,8 +123,8 @@ void *readData3(void *args){
                     //while((result = semctl(inSID,0,GETVAL,NULL))!=2);
                     if((result = semctl(inSID,0,GETVAL,NULL))==2){
                         outpt=fopen("output4.txt","a");
-                        fprintf(outpt,"Thread 3: %d\n",current);
-                        printf("Thread 3: %d\n",current);
+                        fprintf(outpt,"Thread 3: %c\n",current);
+                        printf("Thread 3: %c\n",current);
                         fclose(outpt);
                         prev1=current;
                         print=false;
@@ -141,7 +135,6 @@ void *readData3(void *args){
                     semctl(inSID,0,SETVAL,0);
                 }
             }
-            pthread_mutex_unlock(&lock);
         }
         usleep(500000);
     }

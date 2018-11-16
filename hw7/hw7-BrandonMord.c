@@ -160,5 +160,6 @@ int main(){
     }
     printf("%s\n",stringOut);
     free(stringOut);
+    
     return 0;
 }   
