@@ -17,32 +17,52 @@ int main(int argc, char **argv){
     int i;
     for(i=0;i<argc;i++){
         printf("%s\n",argv[i]);
-    }
+    }*/
     
     FILE *out = fopen(argv[0],"w");
+    fclose(out);
+    out = fopen(argv[0],"a");
     int readEnd = atoi(argv[1]);
     int sid = atoi(argv[2]);
     int shmid = atoi(argv[3]);
     char word[50];
     memset(word,'\0',50);
     int result;
+    int count =0;
     
-    while((result = semctl(sid,0,GETVAL,NULL)!=2)){ 
-        read(readEnd,&word,50);
-        printf("%s\n",word);
+    while((result = semctl(sid,0,GETVAL,NULL))<2){
+        while((result = semctl(sid,0,GETVAL,NULL))<1){
+            //printf("result = %d\n",result);
+            //printf("TRAPPED HERE\n");
+        }
+        if((read(readEnd,&word,50) == -1)){
+            break;
+        }
+        //printf("%s\n",word);
+        if(count==0){
+            fprintf(out,"%s",word);
+        }
+        else{
+            fprintf(out," %s",word);
+        }
+        count++;
         memset(word,'\0',50);
-        if((result = semctl(sid,0,GETVAL,NULL))!=2){
+        if((result = semctl(sid,0,GETVAL,NULL))<2){
             semctl(sid,0,SETVAL,0);
         }
-        while((result=semctl(sid,0,GETVAL,NULL))!=1){
+        /*while((result=semctl(sid,0,GETVAL,NULL))!=1){
             if(result==2){
                 printf("TRIED TO CONTINUE ");
                 break;
             }
             printf("Stuck HERE %d \n",result);
             sleep(1);
-        }
+        }*/
+        
     }
-    fclose(out);*/
+    semctl(sid,0,IPC_RMID,0);
+    close(readEnd);
+    fclose(out);
+    //printf("TERMINATE 3\n");
     return 0;
 }

@@ -11,6 +11,7 @@
 #include <sys/types.h>
 #include <sys/ipc.h>
 #include <sys/sem.h>
+#include <semaphore.h>
 
 int main(int argc, char **argv){
     /*printf("program2 %d\n",argc);
@@ -35,6 +36,7 @@ int main(int argc, char **argv){
     
     while((result=semctl(sid1,0,GETVAL,NULL)!=2)){
         while((result=semctl(sid1,0,GETVAL,NULL))<1);
+        while((result=semctl(sid2,0,GETVAL,NULL))!=0);
         read(readEnd,&word,50);
         
         if(word[0]== 'a' || word[0]== 'e' || word[0]== 'i'|| word[0]== 'o'|| word[0]== 'u' || word[0]== 'A' || word[0]== 'E' || word[0]== 'I'|| word[0]== 'O'|| word[0]== 'U')
@@ -48,6 +50,9 @@ int main(int argc, char **argv){
                 word[strlen(word)]=punct;
                 word[strlen(word)]='\0';
             }
+            else{
+                strcat(word,s1);
+            }
         }
         else{
             type2++;
@@ -59,14 +64,21 @@ int main(int argc, char **argv){
                 word[strlen(word)]=punct;
                 word[strlen(word)]='\0';
             }
+            else{
+                strcat(word,s2);
+            }
         }
-        printf("%s\n",word);
+        //printf("%s\n",word);
+        write(writeEnd,&word,strlen(word));
         memset(word,'\0',50);
         if((result=semctl(sid1,0,GETVAL,NULL)!=2)){
             semctl(sid1,0,SETVAL,0);
         }
+        semctl(sid2,0,SETVAL,1);
     }
-    semctl(sid1,0,IPC_RMID);
+    semctl(sid2,0,SETVAL,2);
+    semctl(sid1,0,IPC_RMID,0);
     close(readEnd);
+    //printf("TERMINATE 2\n");
     return 0;
 }

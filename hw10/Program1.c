@@ -20,6 +20,13 @@ int main(int argc, char **argv){
         printf("%s\n",argv[i]);
     }*/
     FILE *inpt = fopen(argv[0],"r");
+    int SIZE = 0;
+    while(fgetc(inpt) != EOF){
+        SIZE++;
+    }
+    //printf("Size = %d\n",SIZE);
+    fclose(inpt);
+    inpt=fopen(argv[0],"r");
     
     int writeEnd = atoi(argv[1]);
     int sid = atoi(argv[2]);
@@ -29,9 +36,10 @@ int main(int argc, char **argv){
         printf("ERROR Program 1\n");
     }
     char *token;
-    char store[50];
+    char store[SIZE];
+    memset(store,'\0',50);
     char *beforeNewLine;
-    token = strtok(fgets(store,50,inpt)," ");
+    token = strtok(fgets(store,SIZE,inpt)," ");
     while(token!=NULL){
         while((result = semctl(sid,0,GETVAL,NULL))>0){
             //printf("%d\n",result);
@@ -40,11 +48,13 @@ int main(int argc, char **argv){
             token[strlen(token)-1]='\0';
         }
         write(writeEnd,token,strlen(token));
+        //printf("%s\n",token);
         semctl(sid,0,SETVAL,1);
         token=strtok(NULL," ");
     }
     semctl(sid,0,SETVAL,2);
     close(writeEnd);
     fclose(inpt);
+    //printf("TERMINATE 1\n");
     return 0;
 }

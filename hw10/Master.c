@@ -39,8 +39,8 @@ int main(int argc, char **argv){
     
     //////////////////////////////////////////
     /*      Create Both Semaphores          */
-    key_t SKey1 = ftok("Master.c",1);
-    key_t SKey2 = ftok("Master.c",2);
+    key_t SKey1 = ftok("input.txt",1);
+    key_t SKey2 = ftok("output.txt",1);
     int sid1,sid2;
     sid1=semget(SKey1,1,0660 | IPC_CREAT);
     semctl(sid1,0,SETVAL,0);
@@ -89,5 +89,8 @@ int main(int argc, char **argv){
     waitpid(pid1,&status,0);
     waitpid(pid2,&status,0);
     waitpid(pid3,&status,0);
+    semctl(sid1,0,IPC_RMID,0);
+    semctl(sid2,0,IPC_RMID,0);
+    //printf("TERMINATE MASTER\n");
     return 0;
 }
