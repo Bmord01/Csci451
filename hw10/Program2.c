@@ -84,6 +84,8 @@ int main(int argc, char **argv){
     hold=write;
     *hold++=type1;
     *hold=type2;
+    shmdt(write);
+    shmdt(hold);
     semctl(sid2,0,SETVAL,4);
     semctl(sid1,0,IPC_RMID,0);
     close(readEnd);

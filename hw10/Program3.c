@@ -69,6 +69,9 @@ int main(int argc, char **argv){
     printf("Type 1: %d\n",*hold);
     *hold++;
     printf("Type 2: %d\n",*hold);
+    shmdt(read);
+    shmdt(hold);
+    shmctl(shmid,IPC_RMID,NULL);
     semctl(sid,0,IPC_RMID,0);
     close(readEnd);
     fclose(out);
