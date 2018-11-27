@@ -12,6 +12,7 @@
 #include <sys/ipc.h>
 #include <sys/sem.h>
 #include <semaphore.h>
+#include <sys/shm.h>
 
 int main(int argc, char **argv){
     /*printf("program2 %d\n",argc);
@@ -77,6 +78,13 @@ int main(int argc, char **argv){
         semctl(sid2,0,SETVAL,1);
     }
     semctl(sid2,0,SETVAL,2);
+    while((result=semctl(sid2,0,GETVAL,NULL))<3);
+    int *write,*hold;
+    write = (int *)shmat(shmid,0,0);
+    hold=write;
+    *hold++=type1;
+    *hold=type2;
+    semctl(sid2,0,SETVAL,4);
     semctl(sid1,0,IPC_RMID,0);
     close(readEnd);
     //printf("TERMINATE 2\n");

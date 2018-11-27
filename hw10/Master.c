@@ -52,7 +52,7 @@ int main(int argc, char **argv){
     //////////////////////////////////////////
     /*      Create Shared Memory Segment    */
     key_t SKey3 = ftok("Master.c",3);
-    int shmid = shmget(SKey3,2048,0660 | IPC_CREAT);
+    int shmid = shmget(SKey3,27,0660 | IPC_CREAT);
     //printf("%d\n",shmid);
     //////////////////////////////////////////
     

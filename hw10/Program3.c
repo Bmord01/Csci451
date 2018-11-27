@@ -11,6 +11,7 @@
 #include <sys/types.h>
 #include <sys/ipc.h>
 #include <sys/sem.h>
+#include <sys/shm.h>
 
 int main(int argc, char **argv){
     /*printf("program3 %d\n",argc);
@@ -60,6 +61,14 @@ int main(int argc, char **argv){
         }*/
         
     }
+    semctl(sid,0,SETVAL,3);
+    while((result = semctl(sid,0,GETVAL,NULL))<4);
+    int *read,*hold;
+    read = (int *)shmat(shmid,0,0);
+    hold=read;
+    printf("Type 1: %d\n",*hold);
+    *hold++;
+    printf("Type 2: %d\n",*hold);
     semctl(sid,0,IPC_RMID,0);
     close(readEnd);
     fclose(out);
