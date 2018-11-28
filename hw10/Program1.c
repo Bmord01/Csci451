@@ -19,42 +19,50 @@ int main(int argc, char **argv){
     for(i=0;i<argc;i++){
         printf("%s\n",argv[i]);
     }*/
-    FILE *inpt = fopen(argv[0],"r");
-    int SIZE = 0;
-    while(fgetc(inpt) != EOF){
-        SIZE++;
-    }
-    //printf("Size = %d\n",SIZE);
-    fclose(inpt);
-    inpt=fopen(argv[0],"r");
+    int inpt;
+    inpt=open(argv[0],O_RDONLY);
     
     int writeEnd = atoi(argv[1]);
     int sid = atoi(argv[2]);
     int result;
     
-    if(inpt==NULL){
-        printf("ERROR Program 1\n");
-    }
-    char *token;
-    char store[SIZE];
-    memset(store,'\0',50);
-    char *beforeNewLine;
-    token = strtok(fgets(store,SIZE,inpt)," ");
-    while(token!=NULL){
+    char holder[50];
+    memset(holder,'\0',50);
+    char final[50];
+    memset(final,'\0',50);
+    char in;
+    int pos=0;
+    
+   while((read(inpt,&in,1))!=0){
         while((result = semctl(sid,0,GETVAL,NULL))>0){
             //printf("%d\n",result);
         }
-        if((beforeNewLine = strchr(token,'\n'))!=NULL){
-            token[strlen(token)-1]='\0';
+        if(in!=' '){
+            //printf("%c\n",in);
+            holder[pos]=in;
+            pos++;
         }
-        write(writeEnd,token,strlen(token));
-        //printf("%s\n",token);
-        semctl(sid,0,SETVAL,1);
-        token=strtok(NULL," ");
+        else{
+            strcpy(final,holder);
+            //printf("%s\n",final);
+            write(writeEnd,final,strlen(final));
+            semctl(sid,0,SETVAL,1);
+            pos=0;
+            memset(holder,'\0',50);
+        }
     }
+    while((result = semctl(sid,0,GETVAL,NULL))>0){
+            //printf("%d\n",result);
+    }
+    strcpy(final,holder);
+    //printf("%s\n",final);
+    write(writeEnd,final,strlen(final));
+    semctl(sid,0,SETVAL,1);
+    pos=0;
+    memset(holder,'\0',50);
     semctl(sid,0,SETVAL,2);
     close(writeEnd);
-    fclose(inpt);
+    close(inpt);
     //printf("TERMINATE 1\n");
     return 0;
 }
