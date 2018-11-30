@@ -26,8 +26,8 @@ int main(int argc, char **argv){
     int readEnd = atoi(argv[1]);
     int sid = atoi(argv[2]);
     int shmid = atoi(argv[3]);
-    char word[50];
-    memset(word,'\0',50);
+    char word[250];
+    memset(word,'\0',250);
     int result;
     int count =0;
     
@@ -36,7 +36,7 @@ int main(int argc, char **argv){
             //printf("result = %d\n",result);
             //printf("TRAPPED HERE\n");
         }
-        if((read(readEnd,&word,50) == -1)){
+        if((read(readEnd,&word,250) == -1)){
             break;
         }
         //printf("%s\n",word);
@@ -47,7 +47,7 @@ int main(int argc, char **argv){
             fprintf(out," %s",word);
         }
         count++;
-        memset(word,'\0',50);
+        memset(word,'\0',250);
         if((result = semctl(sid,0,GETVAL,NULL))<2){
             semctl(sid,0,SETVAL,0);
         }

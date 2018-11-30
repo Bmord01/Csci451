@@ -27,8 +27,8 @@ int main(int argc, char **argv){
     int sid2 = atoi(argv[3]);
     int shmid = atoi(argv[4]);
     int result;
-    char word[50];
-    memset(word,'\0',50);
+    char word[250];
+    memset(word,'\0',250);
     char *empty = "";
     int type1=0,type2=0;
     char punct;
@@ -38,8 +38,11 @@ int main(int argc, char **argv){
     while((result=semctl(sid1,0,GETVAL,NULL)!=2)){
         while((result=semctl(sid1,0,GETVAL,NULL))<1);
         while((result=semctl(sid2,0,GETVAL,NULL))!=0);
-        read(readEnd,&word,50);
-        
+        read(readEnd,&word,250);
+        //printf("%s\n",word);
+        if(word[strlen(word)] ='\n'){
+                word[strlen(word)-1]='\0';
+            }
         if(word[0]== 'a' || word[0]== 'e' || word[0]== 'i'|| word[0]== 'o'|| word[0]== 'u' || word[0]== 'A' || word[0]== 'E' || word[0]== 'I'|| word[0]== 'O'|| word[0]== 'U')
         {
             type1++;
@@ -69,9 +72,9 @@ int main(int argc, char **argv){
                 strcat(word,s2);
             }
         }
-        //printf("%s\n",word);
+        //printf("%c\n",word[strlen(word)-1]);
         write(writeEnd,&word,strlen(word));
-        memset(word,'\0',50);
+        memset(word,'\0',250);
         if((result=semctl(sid1,0,GETVAL,NULL)!=2)){
             semctl(sid1,0,SETVAL,0);
         }

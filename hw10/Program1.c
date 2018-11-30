@@ -26,10 +26,10 @@ int main(int argc, char **argv){
     int sid = atoi(argv[2]);
     int result;
     
-    char holder[50];
-    memset(holder,'\0',50);
-    char final[50];
-    memset(final,'\0',50);
+    char holder[250];
+    memset(holder,'\0',250);
+    char final[250];
+    memset(final,'\0',250);
     char in;
     int pos=0;
     
@@ -48,7 +48,7 @@ int main(int argc, char **argv){
             write(writeEnd,final,strlen(final));
             semctl(sid,0,SETVAL,1);
             pos=0;
-            memset(holder,'\0',50);
+            memset(holder,'\0',250);
         }
     }
     while((result = semctl(sid,0,GETVAL,NULL))>0){
@@ -56,10 +56,11 @@ int main(int argc, char **argv){
     }
     strcpy(final,holder);
     //printf("%s\n",final);
+    final[strlen(final)-1] = '\0';
     write(writeEnd,final,strlen(final));
     semctl(sid,0,SETVAL,1);
     pos=0;
-    memset(holder,'\0',50);
+    memset(holder,'\0',250);
     semctl(sid,0,SETVAL,2);
     close(writeEnd);
     close(inpt);
