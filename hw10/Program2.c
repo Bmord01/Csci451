@@ -34,6 +34,8 @@ int main(int argc, char **argv){
     char punct;
     char *s1 = "ray";
     char *s2 = "ay";
+    char first= ' ';
+    int i;
     
     while((result=semctl(sid1,0,GETVAL,NULL)!=2)){
         while((result=semctl(sid1,0,GETVAL,NULL))<1);
@@ -45,6 +47,7 @@ int main(int argc, char **argv){
             }
         if(word[0]== 'a' || word[0]== 'e' || word[0]== 'i'|| word[0]== 'o'|| word[0]== 'u' || word[0]== 'A' || word[0]== 'E' || word[0]== 'I'|| word[0]== 'O'|| word[0]== 'U')
         {
+            
             type1++;
             if(word[strlen(word)-1]<65 || (word[strlen(word)-1]>90 && word[strlen(word)-1]<97) || word[strlen(word)-1]>122)
             {
@@ -64,11 +67,22 @@ int main(int argc, char **argv){
             {
                 punct=word[strlen(word)-1];
                 word[strlen(word)-1]='\0';
+                first = word[0];
+                for(i=1;i<=strlen(word);i++){
+                    word[i-1]=word[i];
+                }
+                
+                word[strlen(word)]=first;
                 strcat(word,s2);
                 word[strlen(word)]=punct;
                 word[strlen(word)]='\0';
             }
             else{
+                first = word[0];
+                for(i=1;i<=strlen(word);i++){
+                    word[i-1]=word[i];
+                }
+                word[strlen(word)]=first;
                 strcat(word,s2);
             }
         }
